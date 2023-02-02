@@ -7,8 +7,8 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title=pageTitle
     body
-    h2= saludo 
-    script.
-        setTimeout(function () {
-            window.location.href = "/ingresar"
-        },2000)
+        .container.text-center.my-3
+        .jumbotron(style='background-color: salmon; color: white;')
+            h1 USER ERROR LOGIN
+            h2= error
+            button.btn.btn-warning.my-5(onclick="location.href='/'") VOLVER

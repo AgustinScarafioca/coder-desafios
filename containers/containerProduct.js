@@ -1,20 +1,21 @@
-const mongoose = require('mongoose')
-const models = require('../models/models')
-const modelsChat = require('../models/modelsChat')
+import mongoose from 'mongoose'
+import models from '../models/models'
 
+mongoose.set('strictQuery', false)
 mongoose.connect('mongodb+srv://coderhouse:coderhouse@backendcoder.zhvn6xh.mongodb.net/?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}, (err)=>{
+}, (err) =>{
     if(err){
         console.log(err)
-    } else{
-        console.log('Mongo DB connected')
+    } 
+    else{
+        console.log('MongoDB connected')
     }
 })
 
-class Container {
-
+export default class Container{
+    
     async add(data){
         const dataAdd = new models(data)
         const add = dataAdd.save()
@@ -41,17 +42,4 @@ class Container {
         const del = await models.deleteOne( { _id: id } )
         return del
     }
-
-    async getChat(){
-        const data = await modelsChat.find({}, { _id:0, __v:0 })
-        return data
-    }
-
-    async addChat(data){
-        const dataAdd = new modelsChat(data)
-        const add = await dataAdd.save()
-        return add
-    }
 }
-
-module.exports = Container

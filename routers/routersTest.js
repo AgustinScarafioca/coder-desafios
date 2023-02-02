@@ -1,28 +1,28 @@
-const { Router } = require('express')
-const { faker } = require('@faker-js/faker')
-faker.locale= 'es'
+import { Router } from "express";
+import  { faker } from"@faker-js/faker";
+faker.locale = "es";
 
-const productsTest = Router()
+const productosTest = Router();
 
-productsTest.get('/', (req, res)=> {
-    let products = []
-    for( let i = 0; i < 6; i++){
-        products.push(createProduct(i+1))
+productosTest.get("/", (req, res) => {
+    let products = [];
+    for (let i = 0; i < 6; i++) {
+        products.push(crearProducto(i+1));
     }
 
-    res.render('index', {products})
-})
+    res.render("test", {productos});
+});
 
-function createProduct(id){
+function crearProducto(id) {
     return {
-        id: id,
+        id: id, 
         name: faker.commerce.product(),
         description: faker.commerce.product(),
-        code: faker.commerce.product,
+        code: faker.commerce.product(),
         price: faker.commerce.price(),
-        stock: faker.commerce.stock(),
-        thumbnail: faker.image.abstract()
-    }
-}
+        thumbnail: faker.image.abstract(),
+        stock: faker.commerce.price(),
+    };
+};
 
-module.exports= productsTest
+export default productosTest;

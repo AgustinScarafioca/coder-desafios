@@ -1,17 +1,17 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
-const prodColection = 'productos'
+const collectionProductos = "productos";
 
-const schemaProducts = new mongoose.Schema({
+const schemaProductos = new mongoose.Schema({
     timestamp: String,
     name: String,
     description: String,
-    code: String, 
+    code: String,
     price: Number,
     thumbnail: String,
-    stock: Number
-})
+    stock: Number,
+});
 
-const models = mongoose.model(prodColection, schemaProducts)
+const models = mongoose.model(collectionProductos, schemaProductos);
 
-module.exports = models
+export default models;

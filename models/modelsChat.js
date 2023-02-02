@@ -1,19 +1,22 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
-const chatColection = 'chat'
+const collectionChat = "chat";
 
-const schemaChat =  new mongoose.Schema({
-    author:{
-        email: String,
-        name: String,
-        lastName: String,
-        age: Number,
-    },
+const schemaChat = new mongoose.Schema({
+    author:
+        {
+            email: String,
+            name: String,
+            lastname: String,
+            age: Number,
+            alias: String,
+            avatar: String
+        },
     text: String,
     fyh: String,
-    id: Number
-})
+    id: Number,
+});
 
-const models = mongoose.model(chatColection, schemaChat)
+const modelsChat = mongoose.model(collectionChat, schemaChat);
 
-module.exports = models
+export default modelsChat;
