@@ -1,8 +1,13 @@
 import mongoose from 'mongoose'
 import models from '../models/models'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const mongoDB = process.env.MONGO
 
 mongoose.set('strictQuery', false)
-mongoose.connect('mongodb+srv://coderhouse:coderhouse@backendcoder.zhvn6xh.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect(mongoDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err) =>{

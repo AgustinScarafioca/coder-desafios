@@ -1,102 +1,46 @@
-import Container from "../containers/containerUser";
-import { get, add, update, Delete, } from "../controllers/controllerProduct";
-import { getSignIn, getSignUp, getLogout, } from "../controllers/controllerUser";
-import { Router } from "express";
+import { get, add, update, Delete } from "../controllers/controllerProduct"
+import { getSignIn, getSignUp, getLogout, } from "../controllers/controllerUser"
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import bCrypt from "bcrypt";
+import { register, login } from '../middleware/registerLoginPassport'
+import requireAuth from "../middleware/requireAuth"
+import { Router } from 'express'
 
-const dbUsuario = new Container();
 const products = Router();
 const ingresar = Router();
-const register = Router();
+const registrarse = Router();
 const exit = Router();
 
-function createHash(password) {
-    return bCrypt.hashSync( password, bCrypt.genSaltSync(10), null );
-}
+passport.use('register', register)
+passport.use('login', login)
 
-passport.use("register", new LocalStrategy({
-    passReqToCallback: true,
-}, async (req, username, password, done) => {
+ingresar.get("/", getSignIn)
 
-    const { name } = req.body;
-    const user = await dbUsuario.getUser(username);
-
-    if (user) {
-        return done("el usuario ya esta registrado", false);
-    }
-
-    const newUser = {
-        username,
-        password: createHash(password),
-        name,
-    };
-
-    dbUsuario.addUser(newUser);
-
-    done(null, newUser);
-}));
-
-function isValidPassword(user, password) {
-    return bCrypt.compareSync(password, user.password);
-}
-
-passport.use("login", new LocalStrategy(async (username, password, done) => {
-
-    const user = await dbUsuario.getUser(username);
-
-    if (!user) {
-        return done("no existe el usuario", false);
-    };
-
-    if (!isValidPassword(user, password)) {
-        return done("Contraseña incorrecta", false)
-    };
-
-    return done(null, user);
-}));
-
-passport.serializeUser((user, done) => {
-    done(null, user.username);
-});
-
-passport.deserializeUser(async (username, done) => {
-    const user = await dbUsuario.getUser(username);
-    done(null, user);
-});
-
-ingresar.get("/", getSignIn);
 ingresar.post("/", passport.authenticate("login", { 
     failureRedirect: "/ingresar/errorIngresar", 
     successRedirect: "/products",
-}));
+}))
+
 ingresar.get("/errorIngresar", (req, res) => {
-    res.render("login-error");
+    res.render("login-error")
 });
 
-register.get("/", getSignUp);
-register.post("/", passport.authenticate("register", {
+registrarse.get("/", getSignUp)
+
+registrarse.post("/", passport.authenticate("register", {
     failureRedirect: "/registro/errorRegistro", 
     successRedirect: "/products",
 }));
-register.get("/errorRegistro", (req, res)=> {
-    res.render("register-error");
+
+registrarse.get("/errorRegistro", (req, res)=> {
+    res.render("register-error")
 });
 
-exit.get("/", getLogout);
+exit.get("/", getLogout)
 
-function requireAuthentication(req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.redirect('/ingresar');
-    };
-};
 
-products.get("/:id?", requireAuthentication, get);
-products.post("/", requireAuthentication, add);
-products.put("/:id", requireAuthentication, update);
-products.delete("/:id", requireAuthentication, Delete);
+products.get("/:id?", requireAuth, get)
+products.post("/", requireAuth, add)
+products.put("/:id", requireAuth, update)
+products.delete("/:id", requireAuth, Delete)
 
-export {ingresar, products, register, exit};
+export {ingresar, products, registrarse, exit}

@@ -1,9 +1,14 @@
 import mongoose, { model } from 'mongoose'
 import modelsChat from '../models/modelsChat'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const mongoDB = process.env.MONGO
 
 mongoose.set('strictQuery', false)
 
-mongoose.connect('mongodb+srv://coderhouse:coderhouse@backendcoder.zhvn6xh.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect(mongoDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err) =>{
