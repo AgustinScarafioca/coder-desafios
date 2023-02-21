@@ -1,9 +1,10 @@
-import { get, add, update, Delete } from "../controllers/controllerProduct"
-import { getSignIn, getSignUp, getLogout, } from "../controllers/controllerUser"
+import { get, add, update, Delete } from "../controllers/controllerProduct.js"
+import { getSignIn, getSignUp, getLogout, } from "../controllers/controllerUser.js"
 import passport from "passport";
-import { register, login } from '../middleware/registerLoginPassport'
-import requireAuth from "../middleware/requireAuth"
+import { register, login } from '../middleware/registerLoginPassport.js'
+import requireAuth from "../middleware/requireAuth.js"
 import { Router } from 'express'
+import logger from '../utils/loggers.js'
 
 const products = Router();
 const ingresar = Router();
@@ -21,6 +22,7 @@ ingresar.post("/", passport.authenticate("login", {
 }))
 
 ingresar.get("/errorIngresar", (req, res) => {
+    logger.info("Ruta " + method + url)
     res.render("login-error")
 });
 
@@ -32,6 +34,7 @@ registrarse.post("/", passport.authenticate("register", {
 }));
 
 registrarse.get("/errorRegistro", (req, res)=> {
+    logger.info("Ruta " + method + url)
     res.render("register-error")
 });
 

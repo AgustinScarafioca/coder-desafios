@@ -1,5 +1,5 @@
-import Container from "../containers/containerProduct";
-import logger from '../utils/loggers'
+import Container from "../containers/containerProduct.js";
+import logger from '../utils/loggers.js'
 
 
 const Product = new Container()

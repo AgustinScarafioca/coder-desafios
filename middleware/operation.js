@@ -1,4 +1,4 @@
-import logger from '../utils/loggers'
+import logger from '../utils/loggers.js'
 
 process.on('exit', () => {
     logger.info('Hilo terminado: ' + process.pid)

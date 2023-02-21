@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import { ingresar, products, registrarse, exit } from "./routers/routers.js";
 import productosTest from "./routers/routersTest.js";
-import info from "./routers/info.js";
+import { info } from "./routers/info.js";
 import apiRandom from "./routers/apiRandom.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -18,6 +18,7 @@ import parseArgs from 'minimist';
 import dotenv from 'dotenv';
 import cluster from 'cluster'
 import os from 'os'
+import logger from './utils/loggers.js'
 
 const numCpus = os.cpus().length
 
@@ -91,6 +92,12 @@ app.get('/', (req, res) => {
     res.redirect('/productos')
 })
 
+app.get('*', (req, res) =>{
+    const { url, method} = req
+    logger.warn('Ruta ' + method + url + 'no implementada')
+    res.send('Ruta ' + method + url + 'no implementada')
+})
+
 io.on("connection", async socket =>{
 
     const listaMensajes = await chat.getChat();
@@ -131,5 +138,5 @@ function print(objeto) {
 };
 
 httpServer.listen(PORT, () => {
-    console.log(`Servidor corriento en ${port}`);
+    console.log('Servidor corriendo en ' +PORT);
 });

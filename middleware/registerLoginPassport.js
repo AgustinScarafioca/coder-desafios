@@ -1,4 +1,4 @@
-import Container from '../containers/containerUser'
+import Container from '../containers/containerUser.js'
 import passport from 'passport'
 import {Strategy as LocalStrategy} from 'passport-local'
 import bcrypt from 'bcrypt'
