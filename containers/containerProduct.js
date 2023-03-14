@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import models from '../models/models.js'
+import models from '../models/productModel.js'
 import dotenv from 'dotenv'
 import logger from '../utils/loggers.js'
 

@@ -1,49 +1,49 @@
-import { get, add, update, Delete } from "../controllers/controllerProduct.js"
-import { getSignIn, getSignUp, getLogout, } from "../controllers/controllerUser.js"
-import passport from "passport";
-import { register, login } from '../middleware/registerLoginPassport.js'
-import requireAuth from "../middleware/requireAuth.js"
-import { Router } from 'express'
-import logger from '../utils/loggers.js'
+import { Router } from 'express';
+import passport from 'passport';
+import multer from 'multer';
+import authentication from '../middleware/authentication.js';
+import { register, login } from '../middleware/register-login.js';
+import { getCart, postProductCart, deleteProductCart, deleteCart } from '../3Controlers/Cart.js';
+import { getProduct, getProductName, postProduct, updateProduct, deleteProduct } from '../3Controlers/Products.js';
+import { getSingIn, getSignUp, getLogout, getErrorLogin, getErrorRegister, getInicio } from '../3Controlers/User.js';
+import postCompra from '../3Controlers/Compras.js';
 
-const products = Router();
+const upload = multer({ dest: './public/img/uploads/' });
+
+passport.use('register', register);
+passport.use('login', login);
+
+const inicio = Router();
+const productos = Router();
 const ingresar = Router();
 const registrarse = Router();
-const exit = Router();
+const salir = Router();
+const carrito = Router();
+const compras = Router();
 
-passport.use('register', register)
-passport.use('login', login)
+ingresar.get('/', getSingIn);
+ingresar.post('/', passport.authenticate('login', { failureRedirect: '/ingresar/errorIngresar', successRedirect: '/inicio' }));
+ingresar.get('/errorIngresar', getErrorLogin);
 
-ingresar.get("/", getSignIn)
+registrarse.get('/', getSignUp);
+registrarse.post('/', upload.single('photo'), passport.authenticate('register', { failureRedirect: 'registrarse/errorRegistro', successRedirect: '/inicio' }));
+registrarse.get('/errorRegistro', getErrorRegister);
 
-ingresar.post("/", passport.authenticate("login", { 
-    failureRedirect: "/ingresar/errorIngresar", 
-    successRedirect: "/products",
-}))
+salir.get('/', getLogout);
 
-ingresar.get("/errorIngresar", (req, res) => {
-    logger.info("Ruta " + method + url)
-    res.render("login-error")
-});
+inicio.get('/', getInicio);
 
-registrarse.get("/", getSignUp)
+productos.get('/', getProduct);
+productos.post('/busqueda', getProductName);
+productos.post('/', authentication, postProduct);
+productos.put('/:id', authentication, updateProduct);
+productos.delete('/:id', authentication, deleteProduct);
 
-registrarse.post("/", passport.authenticate("register", {
-    failureRedirect: "/registro/errorRegistro", 
-    successRedirect: "/products",
-}));
+carrito.get('/', authentication, getCart);
+carrito.post('/', authentication, postProductCart);
+carrito.post('/producto', authentication, deleteProductCart);
+carrito.delete('/', authentication, deleteCart);
 
-registrarse.get("/errorRegistro", (req, res)=> {
-    logger.info("Ruta " + method + url)
-    res.render("register-error")
-});
+compras.post('/', authentication, postCompra);
 
-exit.get("/", getLogout)
-
-
-products.get("/:id?", requireAuth, get)
-products.post("/", requireAuth, add)
-products.put("/:id", requireAuth, update)
-products.delete("/:id", requireAuth, Delete)
-
-export {ingresar, products, registrarse, exit}
+export { inicio, productos, ingresar, registrarse, salir, carrito, compras };
