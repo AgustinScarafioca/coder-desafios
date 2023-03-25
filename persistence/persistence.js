@@ -1,7 +1,7 @@
-import logger from '../0Config/Logger.js'
-import connectMongo from '../0Config/ConnectMongo.js'
+import logger from '../config/logger.js'
+import connectMongo from '../config/connectMongo.js'
 
-connectMongo();
+connectMongo()
 
 class Persistence {
 	async add(models, data) {

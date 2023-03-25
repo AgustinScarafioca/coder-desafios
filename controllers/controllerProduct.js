@@ -1,82 +1,64 @@
-import Container from "../containers/containerProduct.js";
-import logger from '../utils/loggers.js'
+import logger from '../config/logger.js'
+import servicesProducts from '../services/products.js'
 
-
-const Product = new Container()
-
-export const get = (req, res) => {
-    const { url, method } = req
-    const id = req.params.id;
-    if (id) {
-        logger.info('Ruta' + method + url)
-        Product.get(id)
-            .then(products => {
-                res.json(products);
-            })
-            .catch(err => {
-                res.json(err);
-            });
-    }
-    else{
-        logger.info('Ruta' + method + url)
-        const user = req.user.username
-        const saludo = `Bienvenido ${user}`
-        Product.get()
-            .then(products => {
-                res.render("index", {products, saludo});
-            })
-            .catch(err => {
-                res.json(err);
-            });
-    };
+export const getProduct = async (req, res) => {
+	const { url, method } = req
+	logger.info(`Ruta ${method} ${url}`)
+	const user = req.user
+	if (user === undefined) {
+		const products = await servicesProducts.getProduct()
+		return res.render('User/productosUser', { products })
+	}
+	const saludo = `Bienvenido ${user.username}`
+	const avatar = user.photo
+	if (user.admin === true) {
+		const products = await servicesProducts.getProduct()
+		return res.render('Admin/productosAdmin', { products, saludo, avatar })
+	}
+	const products = await servicesProducts.getProduct()
+	res.render('UserLogin/productosUserLogin', { products, saludo, avatar })
 };
 
-export const add = (req, res) => {
-    const newProduct = {
-        timestamp: Date.now(),
-        nombre: req.body.name,
-        descripcion: req.body.description,
-        codigo: req.body.code,
-        precio: req.body.price,
-        foto: req.body.thumbnail,
-        stock: req.body.stock,
-    };
-    Product.add(newProduct)
-        .then(id => {
-            res.json({ id: id }, res.redirect("/productos"));
-        })
-        .catch(err => {
-            res.json(err);
-        });
-};
+export const getProductName = async (req, res) => {
+	const { url, method } = req
+	logger.info(`Ruta ${method} ${url}`)
+	const name = req.body.nameb.charAt(0).toUpperCase() + req.body.nameb.slice(1)
+	const user = req.user
+	if (user === undefined) {
+		const products = await servicesProducts.getProductName(name)
+		return res.render('User/productosUser', { products })
+	}
+	const saludo = `Bienvenido ${user.username}`
+	const avatar = user.photo
+	if (user.admin === true) {
+		const products = await servicesProducts.getProductName(name)
+		return res.render('Admin/productosAdmin', { products, saludo, avatar })
+	}
+	const products = await servicesProducts.getProductName(name);
+	res.render('UserLogin/productosUserLogin', { products, saludo, avatar })
+}
 
-export const update = (req, res) => {
-    const product = {
-        timestamp: Date.now(),
-        nombre: req.body.name,
-        descripcion: req.body.description,
-        codigo: req.body.code,
-        precio: req.body.price,
-        foto: req.body.thumbnail,
-        stock: req.body.stock,
-    };
-    Product.update(req.params.id, product)
-        .then(id => {
-            res.json({ id: id });
-        })
-        .catch(err => {
-            res.json(err);
-        });
-};
+export const postProduct = async (req, res) => {
+	const { url, method } = req
+	logger.info(`Ruta ${method} ${url}`)
+	const product = req.body;
+	await servicesProducts.postProduct(product)
+	res.redirect('/productos')
+}
 
-export const Delete = (req, res) => {
-    const { url, method } = req
-    logger.info('Ruta ' + method + url)
-    Product.delete( req.params.id)
-        .then(id => {
-            res.json({ id: id });
-        })
-        .catch(err => {
-            res.json(err);
-        });
-};
+export const updateProduct = async (req, res) => {
+	const { url, method } = req
+	logger.info(`Ruta ${method} ${url}`)
+	const id = req.params.id
+	const product = req.body
+	await servicesProducts.updateProduct(id, product)
+	res.redirect('/productos')
+}
+
+export const deleteProduct = async (req, res) => {
+	const { url, method } = req
+	logger.info(`Ruta ${method} ${url}`)
+	const id = req.params.id
+	await servicesProducts.deleteProduct(id)
+	res.redirect('/productos')
+}
