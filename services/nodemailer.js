@@ -1,5 +1,5 @@
 import { transporter } from '../config/connectNodemailer.js'
-import logger from '../config/Logger.js'
+import logger from '../config/logger.js'
 
 export const Correo = async (to, subject, html) => {
 	const mail = {
@@ -7,10 +7,10 @@ export const Correo = async (to, subject, html) => {
 		to: to,
 		subject: subject,
 		html: html,
-	};
+	}
 	try {
 		const mensaje = await transporter.sendMail(mail)
-		return mensaje;
+		return mensaje
 	} catch (err) {
 		logger.error(err)
 	}

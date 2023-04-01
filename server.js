@@ -2,16 +2,15 @@ import express from 'express'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
-import { ingresar, productos, registrarse, salir, inicio, carrito, compras } from './routers/routers.js'
+import { ingresar, productos, registrarse, salir, inicio, carrito, compras } from '../coder-desafios/routers/routers.js'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import Persistence from "./persistence/persistence.js"
-import Model from "./models/chatModel.js"
 import passport from 'passport'
 import dotenv from 'dotenv'
 import cluster from 'cluster'
 import os from 'os'
 import logger from './config/logger.js'
+import Factory from './persistence/Factory/chat.js'
 
 dotenv.config()
 
@@ -19,6 +18,7 @@ const app = express()
 const numCPUS = os.cpus().length
 const MONGO = process.env.MONGO
 const PORT = process.env.PORT
+const Persistence = Factory.getDao()
 
 if (cluster.isPrimary) {
 	logger.info(`Master processID: ${process.pid} is running`)
@@ -68,37 +68,37 @@ if (cluster.isPrimary) {
 
 	app.get('/', (req, res) => {
 		res.redirect('/inicio')
-	})
+	});
 	app.get('/mensajes', (req, res) => {
 		const user = req.user
 		if (user === undefined) {
 			return res.redirect('/')
 		}
-		const avatar = req.user.photo
+		const avatar = req.user.photo;
 		const saludo = `Bienvenido ${user.username}`
 		if (req.user.admin === true) {
 			return res.render('Admin/mensajes', { saludo, avatar })
 		}
 		res.render('UserLogin/mensajes', { saludo, avatar })
-	})
+	});
 	app.get('*', (req, res) => {
-		const { url, method } = req;
+		const { url, method } = req
 		logger.warn(`Ruta ${method} ${url} no esta implementada`)
 		res.send(`Ruta ${method} ${url} no esta implementada`)
-	})
+	});
 
 	io.on('connection', async (socket) => {
-		const listaMensajes = await Persistence.get(Model)
+		const listaMensajes = await Persistence.getChat()
 		socket.emit('messages', listaMensajes)
 		socket.on('new-message', async (data) => {
 			if (listaMensajes.length === 0) {
-				return await Persistence.add(Model,{
+				return await Persistence.addChat({
 					...data,
 					fyh: new Date().toLocaleString(),
 					id: 1,
 				})
 			}
-			await Persistence.add(Model,{
+			await Persistence.addChat({
 				...data,
 				fyh: new Date().toLocaleString(),
 				id: listaMensajes.length + 1,

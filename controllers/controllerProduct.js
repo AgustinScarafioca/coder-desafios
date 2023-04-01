@@ -17,7 +17,7 @@ export const getProduct = async (req, res) => {
 	}
 	const products = await servicesProducts.getProduct()
 	res.render('UserLogin/productosUserLogin', { products, saludo, avatar })
-};
+}
 
 export const getProductName = async (req, res) => {
 	const { url, method } = req

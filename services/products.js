@@ -1,19 +1,18 @@
-import Models from '../models/productModel.js'
-import productsDaoFactory from '../persistence/factory.js'
-const persistence = productsDaoFactory.getDao()
+import Factory from '../persistence/Factory/product.js'
+const Persistence = Factory.getDao()
 
 async function getProduct() {
-	const result = await persistence.get(Models)
+	const result = await Persistence.get()
 	return result
 }
 
 async function getProductName(Name) {
-	const result = await persistence.getName(Models, Name)
+	const result = await Persistence.get(Name)
 	return result
 }
 
 async function getProductId(Id) {
-	const result = await persistence.getId(Models, Id)
+	const result = await Persistence.getId(Id)
 	return result
 }
 
@@ -27,7 +26,7 @@ async function postProduct(Producto) {
 		photo: Producto.photo,
 		stock: Producto.stock,
 	}
-	const result = await persistence.add(Models, Data)
+	const result = await Persistence.add(Data)
 	return result
 }
 
@@ -41,12 +40,12 @@ async function updateProduct(Id, Producto) {
 		photo: Producto.photo,
 		stock: Producto.stock,
 	}
-	const result = await persistence.updateId(Models, Id, Data)
+	const result = await Persistence.update(Id, Data)
 	return result
 }
 
 async function deleteProduct(Id) {
-	const result = await persistence.deleteId(Models, Id)
+	const result = await Persistence.delete(Id)
 	return result
 }
 

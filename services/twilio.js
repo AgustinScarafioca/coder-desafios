@@ -1,4 +1,4 @@
-import twilioClient from '../config/connectTwillio.js'
+import twilioClient from '../config/connectTwilio.js'
 import logger from '../config/logger.js'
 import dotenv from 'dotenv'
 

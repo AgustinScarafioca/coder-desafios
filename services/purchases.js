@@ -1,10 +1,9 @@
-import Models from '../models/purchases.js'
-import productsDaoFactory from '../persistence/factory.js'
-const persistence = productsDaoFactory.getDao()
+import Factory from '../persistence/Factory/purchases.js'
+const Persistence = Factory.getDao()
 
-async function postPurchases(Compra) {
-	const result = await persistence.add(Models, Compra)
+async function postCompras(Compra) {
+	const result = await Persistence.addCompras(Compra)
 	return result
 }
 
-export default postPurchases
+export default postCompras

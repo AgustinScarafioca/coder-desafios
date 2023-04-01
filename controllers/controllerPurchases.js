@@ -1,8 +1,8 @@
-import logger from '../config/logger.js';
-import servicesCart from '../services/cart.js';
-import postCompras from '../services/purchases.js';
-import { Correo } from '../services/nodemailer.js';
-import Whatsapp from '../services/twilio.js';
+import logger from '../config/logger.js'
+import servicesCart from '../services/cart.js'
+import postCompras from '../services/purchases.js'
+import { Correo } from '../services/nodemailer.js'
+import Whatsapp from '../services/twilio.js'
 
 const postCompra = async (req, res) => {
 	const { url, method } = req

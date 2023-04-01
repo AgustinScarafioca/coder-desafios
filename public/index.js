@@ -1,5 +1,5 @@
-const baseUrl = 'http://localhost:8080';
-let idActualizar;
+const baseUrl = 'http://localhost:8080'
+let idActualizar
 
 const phoneInputField = document.getElementById('phone')
 const phoneInput = window.intlTelInput(phoneInputField, {
@@ -7,7 +7,7 @@ const phoneInput = window.intlTelInput(phoneInputField, {
 })
 
 function RecuperarNumero(event) {
-	let phone = phoneInput.getNumber();
+	let phone = phoneInput.getNumber()
 	document.getElementById('phoneNumber').value = phone
 }
 
