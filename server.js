@@ -11,6 +11,7 @@ import cluster from 'cluster'
 import os from 'os'
 import logger from './config/logger.js'
 import Factory from './persistence/Factory/chat.js'
+import GraphqlController from './controllers/controllerGraphql.js'
 
 dotenv.config()
 
@@ -65,6 +66,7 @@ if (cluster.isPrimary) {
 	app.use('/salir', salir)
 	app.use('/carrito', carrito)
 	app.use('/compras', compras)
+	app.use('/graphql', new GraphqlController())
 
 	app.get('/', (req, res) => {
 		res.redirect('/inicio')
